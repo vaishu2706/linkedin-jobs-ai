@@ -1,8 +1,8 @@
-from openai import OpenAI
+import openai
 
 class AIMatcher:
     def __init__(self, api_key):
-        self.client = OpenAI(api_key=api_key)
+        openai.api_key = api_key
     
     def match_jobs(self, jobs, user_profile):
         job_list = '\n'.join([f"{i+1}. {job['title']} at {job['company']} - {job['location']}" 
@@ -18,7 +18,7 @@ Jobs:
 Return only job numbers (1,2,3...) that are good matches, separated by commas. No explanation needed."""
 
         try:
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=100,
@@ -48,7 +48,7 @@ Jobs:
 Keep it concise, professional, and highlight why these are good matches. Include the job links."""
 
         try:
-            response = self.client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=500,
