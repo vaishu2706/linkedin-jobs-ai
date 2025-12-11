@@ -9,9 +9,15 @@ load_dotenv()
 
 class JobAlertSystem:
     def __init__(self):
+        openai_key = os.getenv('OPENAI_API_KEY')
+        resend_key = os.getenv('RESEND_API_KEY')
+        
+        if not openai_key or not resend_key:
+            raise ValueError('Missing API keys')
+            
         self.job_fetcher = JobFetcher()
-        self.ai_matcher = AIMatcher(os.getenv('OPENAI_API_KEY'))
-        self.email_sender = EmailSender(os.getenv('RESEND_API_KEY'))
+        self.ai_matcher = AIMatcher(openai_key)
+        self.email_sender = EmailSender(resend_key)
         self.data_store = GitHubDataStore()
         
         self.user_profile = """
