@@ -1,0 +1,35 @@
+name: Daily Job Alerts
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'  # 9 AM UTC, Monday-Friday
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  job-search:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    
+    - name: Run job search
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        TO_EMAIL: ${{ secrets.TO_EMAIL }}
+        JOB_KEYWORDS: ${{ vars.JOB_KEYWORDS }}
+        LOCATION: ${{ vars.LOCATION }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: python main_github.py
